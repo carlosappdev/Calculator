@@ -14,9 +14,9 @@ public partial class CalculatorUI(
 
   string numberBuffer = "";
 
-  bool canOperatorBeAdded = false;
+  //bool canOperatorBeAdded = false;
 
-  bool canChangeOperator = false;
+  bool isOperatorBeingProcessed = false;
 
   protected override void OnActivated()
   {
@@ -34,8 +34,8 @@ public partial class CalculatorUI(
 
   private void ProcessDigit(string mathToken)
   {
-    canOperatorBeAdded = true;
-    canChangeOperator = false;
+    //canOperatorBeAdded = true;
+    isOperatorBeingProcessed = false;
 
     numberBuffer += mathToken;
     Display += mathToken;
@@ -43,9 +43,9 @@ public partial class CalculatorUI(
 
   private void ProcessOperator(string mathToken)
   {
-    if (!canOperatorBeAdded) return;
+    //if (!canOperatorBeAdded) return;
 
-    if (canChangeOperator)
+    if (isOperatorBeingProcessed)
     {
       Display = $"{Display[..^3]} {mathToken} ";
     }
@@ -54,14 +54,14 @@ public partial class CalculatorUI(
       operationChainer.OnNewValue(numberBuffer);
       Display += $" {mathToken} ";
       numberBuffer = "";
-      canChangeOperator = true;
+      isOperatorBeingProcessed = true;
     }
     operationChainer.OnNewOperator(mathToken);
   }
 
   private void ProcessEqualSymbol()
   {
-    if (operationChainer.OperationBuilder is null || canChangeOperator)
+    if (operationChainer.OperationBuilder is null || isOperatorBeingProcessed)
       return;
 
     operationChainer.OnNewValue(numberBuffer);
@@ -70,8 +70,8 @@ public partial class CalculatorUI(
 
   private void ProcessCleanSymbol()
   {
-    canOperatorBeAdded = false;
-    canChangeOperator = false;
+    //canOperatorBeAdded = false;
+    isOperatorBeingProcessed = false;
     Clean("");
   }
 

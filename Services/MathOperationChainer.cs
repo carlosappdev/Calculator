@@ -9,6 +9,12 @@ public class MathOperationChainer
 
   public string TextResult => LastOperation?.Result.ToString() ?? "0";
 
+  public void Reset()
+  {
+    OperationBuilder = null;
+    LastOperation = null;
+  }
+
   public void OnNewOperator(string operatorSymbol)
   {
     OperationBuilder!.Operator = operatorSymbol;
@@ -17,23 +23,23 @@ public class MathOperationChainer
   public void OnNewValue(string number) =>
     OnNewValue(double.Parse(number));
 
-  public void Reset()
+  void OnNewValue(double number)
   {
-    OperationBuilder = null;
-    LastOperation = null;
+    // bool isBuilding = OperationBuilder is not null;
+    // OperationBuilder ??= new() { A = number };
+
+    if (IsBuilding(number))
+    {
+      OperationBuilder!.B = number;
+      LastOperation = OperationBuilder;
+      OperationBuilder = new() { A = number, Previous = LastOperation };
+    }
   }
 
-  void OnNewValue(double digit)
+  bool IsBuilding(double number)
   {
-    if (OperationBuilder is null)
-    {
-      OperationBuilder = new() { A = digit };
-    }
-    else
-    {
-      OperationBuilder.B = digit;
-      LastOperation = OperationBuilder;
-      OperationBuilder = new() { A = digit, Previous = LastOperation };
-    }
+    bool isBuilding = OperationBuilder is not null;
+    OperationBuilder ??= new() { A = number };
+    return isBuilding;
   }
 }

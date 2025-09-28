@@ -6,6 +6,8 @@ namespace Calculator.Services;
 //  - Process math tokens (digits, operators, equal symbol, clean symbol)
 public partial class MathTokenProcessor
 {
+  bool hasDigitBeenEntered = false;
+
   [GeneratedRegex(@"\d")]
   private static partial Regex DigitRegex();
 
@@ -27,9 +29,10 @@ public partial class MathTokenProcessor
   {
     if (IsDigit(mathToken))
     {
+      hasDigitBeenEntered = true;
       OnDigitProcessed?.Invoke(mathToken);
     }
-    else if (IsOperator(mathToken))
+    else if (IsOperator(mathToken) && hasDigitBeenEntered)
     {
       OnOperatorProcessed?.Invoke(mathToken);
     }
@@ -40,6 +43,7 @@ public partial class MathTokenProcessor
     else if (mathToken == "C")
     {
       OnCleanSymbolProcessed?.Invoke();
+      hasDigitBeenEntered = false;
     }
   }
 }
