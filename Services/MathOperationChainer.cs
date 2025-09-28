@@ -6,8 +6,8 @@ public class MathOperationChainer
 {
   public Models.Operation? OperationBuilder { set; get; }
   public Models.Operation? LastOperation { set; get; }
-
   public string TextResult => LastOperation?.Result.ToString() ?? "0";
+  public bool IsBuilding => OperationBuilder is not null;
 
   public void Reset()
   {
@@ -25,10 +25,7 @@ public class MathOperationChainer
 
   void OnNewValue(double number)
   {
-    // bool isBuilding = OperationBuilder is not null;
-    // OperationBuilder ??= new() { A = number };
-
-    if (IsBuilding(number))
+    if (IsBuildingIfNotBuilding(number))
     {
       OperationBuilder!.B = number;
       LastOperation = OperationBuilder;
@@ -36,9 +33,9 @@ public class MathOperationChainer
     }
   }
 
-  bool IsBuilding(double number)
+  bool IsBuildingIfNotBuilding(double number)
   {
-    bool isBuilding = OperationBuilder is not null;
+    bool isBuilding = IsBuilding;
     OperationBuilder ??= new() { A = number };
     return isBuilding;
   }
